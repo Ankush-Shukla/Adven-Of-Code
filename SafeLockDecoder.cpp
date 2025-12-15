@@ -1,7 +1,9 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#define FILE_PATH "./misc_files/SafeInput.txt"
 
+int flag = 0;
 
 class Node
 {
@@ -12,6 +14,7 @@ public:
 
     Node(int val) : data(val), next(nullptr), prev(nullptr) {}
 };
+
 
 class CircularDoublyLinkedList
 {
@@ -39,24 +42,6 @@ public:
         }
     }
 
-void setHeadToValue(Node*& head, int value)
-{
-    if (!head) return;
-
-    Node* curr = head;
-
-    do
-    {
-        if(curr->data == value)
-        {
-            head = curr;
-            return;
-        }
-        curr = curr->next;
-    } 
-    while(curr != head);
-}
-
     void display()
     {
         if(!head)
@@ -71,25 +56,61 @@ void setHeadToValue(Node*& head, int value)
         } while (temp != head);
         std::cout << std::endl;
     }
-    void move_forward(Node* head)
+    void move_forward(Node*& head, int turns)
     {
-      if(!head) return 0;
+      if(!head) return ;
       
       Node* curr = head;
 
-      do
+      for(int i = 0 ; i < turns ; i++)
       {
-        std::cout<<curr<<"\n";
         curr=curr->next;
       }
-      while(curr->next!=head);
+      if(curr->data==0)
+      {
+        std::cout<<curr->data<<"\n";  
+        flag++;
+      }
+      head=curr;
+      
     }
 
-    void move_backwards(Node* head)
+    void move_backwards(Node*& head , int turns)
     {
+       if(!head) return ;
+      
+      Node* curr = head;
+
+      for(int i = 0 ; i < turns ; i++)
+      {
+        curr=curr->prev;
+      }
+      if(curr->data==0)
+      {
+        std::cout<<curr->data<<"\n";  
+        flag++;
+      }
+      head=curr;
+      
 
     }
+
+    void setHeadToValue(Node*& head, int value) {
+    if (!head) return;
+
+    Node* curr = head;
+
+    do {
+        if (curr->data == value) {
+            head = curr;
+            return;
+        }
+        curr = curr->next;
+    } while (curr != head);
+}
+
 };
+
 
 
 int main()
@@ -98,10 +119,11 @@ int main()
 
   //creating our lock using CircularDoublyLinkedList
   CircularDoublyLinkedList list;
-  for (int i = 1; i <= 99; i++) 
+  for (int i = 0; i < 100; i++) 
   {
     list.insert(i);
   }
+  list.setHeadToValue(list.head, 50);
 
 
   //Reading our lock code from the profided input
@@ -118,13 +140,20 @@ int main()
   std::string strInput{};
   while (inf >> strInput)
   {
-    char direction = strInput[0]
-    char steps = strInput.substr(1);
+    char direction = strInput[0];
+    int turns = std::stoi(strInput.substr(1));
+    if(direction == 'R')
+    {
+      std::cout<<"direction :"<<direction<<" turns :"<<turns<<"\n";
+      list.move_forward(list.head,turns);
+    }
+    if(direction == 'L'){
+      std::cout<<"direction :"<<direction<<" turns :"<<turns<<"\n";
+      list.move_backwards(list.head,turns);
+    }
      
   }
 
-  list.setHeadToValue(head,50);
-  list.move_forward(head);
-
+ std::cout <<"flag : "<<flag<<"\n";
   return 0;
 }
